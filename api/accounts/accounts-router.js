@@ -16,8 +16,8 @@ router.get("/", (req, res, next) => {
     .catch(next);
 });
 
-router.get("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.get("/:id", checkAccountId, (req, res) => {
+  res.json(req.account);
 });
 
 router.post("/", (req, res, next) => {
