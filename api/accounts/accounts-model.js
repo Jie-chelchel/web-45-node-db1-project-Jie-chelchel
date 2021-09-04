@@ -1,3 +1,4 @@
+const { nextTick } = require("process");
 const db = require("../../data/db-config");
 
 const getAll = () => {
@@ -9,7 +10,13 @@ const getById = (id) => {
 };
 
 const create = (account) => {
-  // DO YOUR MAGIC
+  const name = account.name.trim();
+  const budget = account.budget;
+  return db("accounts")
+    .insert({ name, budget })
+    .then((newAccountId) => {
+      return getById(newAccountId);
+    });
 };
 
 const updateById = (id, account) => {

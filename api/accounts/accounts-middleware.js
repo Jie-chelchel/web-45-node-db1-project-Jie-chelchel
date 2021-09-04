@@ -1,10 +1,12 @@
 const Accounts = require("./accounts-model");
 
 exports.checkAccountPayload = (req, res, next) => {
-  if (!req.body.name || !req.body.budget) {
+  if (req.body.name === undefined || req.body.budget === undefined) {
     res.status(400).json({ message: "name and budget are required" });
   } else if (typeof req.body.name !== "string") {
     res.status(400).json({ message: "name of account must be a string" });
+  } else if (typeof req.body.budget !== "number") {
+    res.status(400).json({ message: "budget of account must be a number" });
   } else if (
     req.body.name.trim().length < 3 ||
     req.body.name.trim().length > 100
@@ -12,8 +14,6 @@ exports.checkAccountPayload = (req, res, next) => {
     res
       .status(400)
       .json({ message: "name of account must be between 3 and 100" });
-  } else if (typeof req.body.budget !== "number") {
-    res.status(400).json({ message: "budget of account must be a number" });
   } else if (req.body.budget < 1 || req.body.budget > 1000000) {
     res
       .status(400)
@@ -23,7 +23,22 @@ exports.checkAccountPayload = (req, res, next) => {
   }
 };
 
-exports.checkAccountNameUnique = (req, res, next) => {};
+exports.checkAccountNameUnique = async (req, res, next) => {
+  const accounts = await Accounts.getAll();
+  let nameIsTaken;
+
+  for (let account of accounts) {
+    if (account.name === req.body.name) {
+      nameIsTaken = true;
+    } else {
+      nameIsTaken = false;
+    }
+  }
+  console.log(nameIsTaken);
+  if (nameIsTaken) {
+    return res.status(400).json({ message: "that name is taken" });
+  }
+};
 
 exports.checkAccountId = (req, res, next) => {
   Accounts.getById(req.params.id)
