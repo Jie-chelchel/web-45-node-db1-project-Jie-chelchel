@@ -19,12 +19,22 @@ const create = (account) => {
     });
 };
 
-const updateById = (id, account) => {
-  // DO YOUR MAGIC
+const updateById = (id, { name, budget }) => {
+  return db("accounts")
+    .where({ id: id })
+    .update({ name, budget })
+    .then(() => {
+      return getById(id);
+    });
 };
 
 const deleteById = (id) => {
-  // DO YOUR MAGIC
+  return db("accounts")
+    .where({ id: id })
+    .del()
+    .then(() => {
+      return getById(id);
+    });
 };
 
 module.exports = {

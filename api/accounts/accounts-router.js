@@ -31,12 +31,20 @@ router.post(
   }
 );
 
-router.put("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.put("/:id", checkAccountPayload, checkAccountId, (req, res, next) => {
+  Accounts.updateById(req.params.id, req.body)
+    .then((account) => {
+      res.status(200).json(account);
+    })
+    .catch(next);
 });
 
-router.delete("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.delete("/:id", checkAccountId, (req, res, next) => {
+  Accounts.deleteById(req.params.id)
+    .then((account) => {
+      res.json(account);
+    })
+    .catch(next);
 });
 
 // eslint-disable-next-line
