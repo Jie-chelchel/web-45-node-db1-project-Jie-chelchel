@@ -20,11 +20,16 @@ router.get("/:id", checkAccountId, (req, res) => {
   res.json(req.account);
 });
 
-router.post("/", checkAccountPayload, (req, res, next) => {
-  Accounts.create(req.body)
-    .then((newAccount) => res.status(201).json(newAccount))
-    .catch(next);
-});
+router.post(
+  "/",
+  checkAccountPayload,
+  checkAccountNameUnique,
+  (req, res, next) => {
+    Accounts.create(req.body)
+      .then((newAccount) => res.status(201).json(newAccount))
+      .catch(next);
+  }
+);
 
 router.put("/:id", (req, res, next) => {
   // DO YOUR MAGIC

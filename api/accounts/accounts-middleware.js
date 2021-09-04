@@ -25,18 +25,13 @@ exports.checkAccountPayload = (req, res, next) => {
 
 exports.checkAccountNameUnique = async (req, res, next) => {
   const accounts = await Accounts.getAll();
-  let nameIsTaken;
-
-  for (let account of accounts) {
-    if (account.name === req.body.name) {
-      nameIsTaken = true;
-    } else {
-      nameIsTaken = false;
-    }
-  }
-  console.log(nameIsTaken);
+  const nameIsTaken = accounts.find(
+    (account) => account.name === req.body.name.trim()
+  );
   if (nameIsTaken) {
     return res.status(400).json({ message: "that name is taken" });
+  } else {
+    next();
   }
 };
 
